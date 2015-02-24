@@ -1,10 +1,3 @@
-/* Group 9 
-  TANUSHREE BANSAL (2010C6PS656G)
-  BANDLA VENKATA KRISHNA (2010C6PS416G)
-  VANSH MUDGIL (2010C6PS474G)
-  G.GNANAPRIYA (2010C6PS577G)
-*/
-
 module mips_datapath(cycle,ALUControl,clk,rst);
 
   output wire[3:0] ALUControl;
@@ -16,14 +9,12 @@ module mips_datapath(cycle,ALUControl,clk,rst);
             cycle = cycle + 1;
           end
 
-
   // PC initialized
   reg[31:0] PC;
   initial
      begin
         PC <=32'd168;
     end
-  
   
   //control wires
   wire [1:0] PCSource,ALUSrcA,ALUSrcB;
@@ -35,21 +26,17 @@ module mips_datapath(cycle,ALUControl,clk,rst);
   wire [4:0] RtRdMux;
   reg[31:0] prev_alu;
 
-  
-
   /* pcMux
       IorD = 0 ie address is for instruction
       IorD = 1 ie address is for data   
   */   
  assign IorDMux = IorD ? ALURegOut : PC;
   
-  
   //memory
   memory MEM(MemData,IorDMux,BRegOut,MemRead,MemWrite,clk);
  
   //Instruction register
   IR_reg IR(IROut,MemData,IRWrite);
-
 
   //Memory Data Register
   register MDR(MDROut,MemData);
@@ -63,7 +50,6 @@ module mips_datapath(cycle,ALUControl,clk,rst);
       1 => Rd is the destination register
   */
    mux2to1 MUX3(RtRdMux,IROut[20:16],IROut[15:11],RegDst);
-   
    
     /* MemtoReg :
       0 => Data to be written back in the write register comes from alu
@@ -87,7 +73,6 @@ module mips_datapath(cycle,ALUControl,clk,rst);
   mux_4to1 MUX0(ALUSrcA_out,PC,ARegOut,ZeroExtendOut,ZeroExtendOut,ALUSrcA);
   mux_4to1 MUX1(ALUSrcB_out,BRegOut,32'd4,SignExtendOut,sign_extend_shift_2,ALUSrcB);
 
-
   //ALU
   ALU alu(ALUResult,zero,ALUSrcA_out,ALUSrcB_out,ALUControl);
   register ALUOUT(ALURegOut,ALUResult);
@@ -98,7 +83,6 @@ module mips_datapath(cycle,ALUControl,clk,rst);
     #40
        prev_alu <= ALUResult;
     end
-  
   
   //jump address calculation
     wire [31:0] jump_address;
@@ -116,6 +100,5 @@ module mips_datapath(cycle,ALUControl,clk,rst);
                   PC <= next_pc; 
             end 
           end 
- 
 
 endmodule
